@@ -1,3 +1,4 @@
 <mat-card class="card">
-    <img mat-card-image [src]="imgSrc" alt="photo of a dog">
+    <div class="placeholder" [hidden]="!loading"></div>
+    <img mat-card-image [hidden]="loading" [src]="imgSrc" alt="photo of a dog" (load)="loading = false">
 </mat-card>
