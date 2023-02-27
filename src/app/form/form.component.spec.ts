@@ -1,6 +1,5 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatOptionParentComponent } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -26,7 +25,6 @@ describe('FormComponent', () => {
 
     fixture = MockRender(FormComponent);
     component = fixture.point.componentInstance;
-
   });
 
   it('should create', () => {
