@@ -1,0 +1,22 @@
+.spacer {
+    flex: 1 1 auto;
+}
+
+.title {
+   display: flex;
+   gap: 10px; 
+}
+
+.main-content {
+    margin: 16px 16px;
+}
+
+.count {
+    margin-bottom: 16px;
+}
+
+.cards {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}

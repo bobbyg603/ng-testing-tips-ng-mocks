@@ -1,0 +1,14 @@
+<form [formGroup]="formGroup">
+    <mat-form-field>
+        <mat-label>Number of Dogs</mat-label>
+        <input matInput type="number" min="1" max="20" formControlName="count" (change)="onFormChange()">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Breed</mat-label>
+        <mat-select name="breed" formControlName="breed" (selectionChange)="onFormChange()">
+            <mat-option *ngFor="let breed of breeds" [value]="breed">
+                {{breed}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>
