@@ -1,4 +1,4 @@
-<mat-card class="card">
+<mat-card class="card pointer" (click)="onClick()">
     <div class="placeholder" [hidden]="!loading"></div>
     <img mat-card-image [hidden]="loading" [src]="imgSrc" alt="photo of a dog" (load)="loading = false">
 </mat-card>
