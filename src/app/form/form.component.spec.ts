@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
+import { By } from '@angular/platform-browser';
 import { MockedComponentFixture, MockModule, MockRender, ngMocks } from 'ng-mocks';
 import { firstValueFrom } from 'rxjs';
 import { FormComponent } from './form.component';
@@ -62,13 +63,24 @@ describe('FormComponent', () => {
   });
 
   describe('onFormChange', () => {
-    it('should emit formValue', async () => {
-      const resultPromise = firstValueFrom(component.formChange);
-      const breed = 'affenpinscher';
-      const count = 5;
-      component.formGroup.patchValue({ breed, count });
+    const breed = 'affenpinscher';
+    const count = 5;
 
-      component.onFormChange();
+    beforeEach(() => component.formGroup.patchValue({ breed, count }));
+
+    it('should emit formValue when count changes', async () => {
+      const resultPromise = firstValueFrom(component.formChange);
+
+      fixture.debugElement.query(By.directive(MatInput)).triggerEventHandler('change');
+      const result = await resultPromise;
+      
+      expect(result).toEqual(jasmine.objectContaining({ breed, count }));
+    });
+
+    it('should emit formValue when breed changes', async () => {
+      const resultPromise = firstValueFrom(component.formChange);
+
+      fixture.debugElement.query(By.directive(MatSelect)).triggerEventHandler('selectionChange');
       const result = await resultPromise;
       
       expect(result).toEqual(jasmine.objectContaining({ breed, count }));
