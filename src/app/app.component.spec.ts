@@ -78,7 +78,7 @@ describe('AppComponent', () => {
     });
   });
 
-  describe('onFormChang', () => {
+  describe('onFormChange', () => {
     it('should call getDogs with breed and count', () => {
       const breed = 'affenpinscher';
       const count = 3;
