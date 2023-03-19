@@ -102,11 +102,15 @@ describe('AppComponent', () => {
     });
 
     it('should render title', () => {
-      expect(rendered.nativeElement.querySelector('span')?.textContent).toMatch(app.title);
+      expect(rendered.nativeElement.querySelector('span.title')?.textContent).toMatch(app.title);
     });
 
     it('should pass breed to form', () => {
       expect(formComponent.breed).toBe(app.breed);
+    });
+
+    it('should pass breeds to form', () => {
+      expect(formComponent.breeds).toBe(breeds);
     });
 
     it('should pass count to form', () => {
@@ -123,6 +127,21 @@ describe('AppComponent', () => {
       rendered.componentInstance.loading$ = of(true);
       rendered.detectChanges();
       expect(ngMocks.find(MatProgressSpinner)).toBeTruthy();
+    });
+
+    it('should not show spinner when not loading', () => {
+      rendered.componentInstance.loading$ = of(false);
+      rendered.detectChanges();
+      expect(ngMocks.findAll(MatProgressSpinner).length).toBe(0);
+    });
+
+    it('should call onFormChange when form component raises formChange event', () => {
+      const event = { breed: 'affenpinscher', count: 3 };
+      const spy = spyOn(rendered.componentInstance, 'onFormChange');
+
+      formComponent.formChange.emit(event);
+
+      expect(spy).toHaveBeenCalledWith(event);
     });
   });
 });
