@@ -1,46 +1,42 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatProgressSpinner, MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { createSpyFromClass, Spy } from 'jasmine-auto-spies';
-import { MockComponent, MockedComponentFixture, MockModule, MockProvider, MockRender, ngMocks } from 'ng-mocks';
+import { MockBuilder, MockedComponentFixture, MockRender, ngMocks } from 'ng-mocks';
 import { firstValueFrom, of, skip } from 'rxjs';
 import { AppComponent } from './app.component';
+import { AppModule } from './app.module';
 import { CardComponent } from './card/card.component';
+import { DialogComponent } from './dialog/dialog.component';
 import { DogService } from './dog/dog.service';
 import { FormComponent } from './form/form.component';
 
 let dogService: Spy<DogService>;
-let fixture: ComponentFixture<AppComponent>;
 let app: AppComponent;
 let breeds: string[];
 let dogs: string[];
 
-describe('AppComponent', () => {
-  breeds = ['affenpinscher', 'african', 'airedale'];
-  dogs = ['https://images.dog.ceo/breeds/affenpinscher/n02110627_10047.jpg'];
-  dogService = createSpyFromClass(DogService);
-  dogService.getBreeds.and.returnValue(of(breeds));
-  dogService.getDogs.and.returnValue(of(dogs));
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [
-        MockModule(FontAwesomeModule),
-        MockModule(MatProgressSpinnerModule),
-        MockModule(MatToolbarModule)
-      ],
-      declarations: [
-        AppComponent,
-        MockComponent(FormComponent),
-        MockComponent(CardComponent)
-      ],
-      providers: [
-        MockProvider(DogService, dogService)
-      ]
-    }).compileComponents();
+let rendered: MockedComponentFixture<AppComponent>;
+let cardComponents: CardComponent[];
+let formComponent: FormComponent;
 
-    fixture = TestBed.createComponent(AppComponent);
-    app = fixture.componentInstance;
+describe('AppComponent', () => {
+  beforeEach(async () => {
+    breeds = ['affenpinscher', 'african', 'airedale'];
+    dogs = ['https://images.dog.ceo/breeds/affenpinscher/n02110627_10047.jpg'];
+    dogService = createSpyFromClass(DogService);
+    dogService.getBreeds.and.returnValue(of(breeds));
+    dogService.getDogs.and.returnValue(of(dogs));
+    await MockBuilder(AppComponent, AppModule)
+      .mock(FontAwesomeModule)
+      .mock(MatProgressSpinnerModule)
+      .mock(MatToolbarModule)
+      .mock(CardComponent)
+      .mock(DialogComponent)
+      .mock(FormComponent)
+      .provide({ provide: DogService, useValue: dogService });
+    rendered = MockRender(AppComponent, null, { detectChanges: false });
+    app = rendered.point.componentInstance;
   });
 
   it('should create the app', () => {
@@ -71,7 +67,7 @@ describe('AppComponent', () => {
     it('should emit false after call to getDogs', async () => {
       const resultPromise = firstValueFrom(app.loading$.pipe(skip(1)));
 
-      fixture.detectChanges();
+      rendered.detectChanges();
       const result = await resultPromise;
 
       expect(result).toBe(false);
@@ -90,13 +86,8 @@ describe('AppComponent', () => {
   });
 
   describe('template', () => {
-    let rendered: MockedComponentFixture<AppComponent>;
-    let cardComponents: CardComponent[];
-    let formComponent: FormComponent;
-
     beforeEach(() => {
-      ngMocks.flushTestBed();
-      rendered = MockRender(AppComponent);
+      rendered.detectChanges();
       cardComponents = ngMocks.findAll(CardComponent).map(c => c.componentInstance);
       formComponent = ngMocks.find<FormComponent>('app-form').componentInstance;
     });
